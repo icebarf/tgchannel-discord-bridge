@@ -1,42 +1,14 @@
-import json
-from telethon import TelegramClient, events
-from telethon import sync
-from telethon.tl.functions.help import GetTermsOfServiceUpdateRequest
+from config import LocalTelegramClient
+from telegram_end import telegram_main
 
-import logging
-from datetime import datetime
-time_now = datetime.now()
-time_str = time_now.strftime("%d_%m_%Y_%H_%M_%S")
-logging.basicConfig(filename= time_str + "_telegram_discord.log", format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.INFO)
+import os
 
-api_id = None
-api_hash = None
-channel_id = None
-name = None
+if os.name != "nt":
+    import uvloop
+    uvloop.install()
 
-with open("login.json", "r", encoding="utf-8") as file:
-      json_data = json.load(file)
-      api_id = json_data["api_id"]
-      api_hash = json_data["api_hash"]
-      name = json_data["name"]
-      channel_id = json_data["channel_id"]
+def telegram_launcher():
+    with LocalTelegramClient:
+        LocalTelegramClient.loop.run_until_complete(telegram_main())
 
-
-Client = TelegramClient('anon', api_id, api_hash)
-
-async def main():
-    me = await Client.get_me()
-    logging.info("Telegram User information:" + me.stringify())
-
-    username = me.username
-    logging.info(username)
-    logging.info(me.phone)
-
-    async for dialog in Client.iter_dialogs():
-        string = dialog.name + ' has ID ' + str(dialog.id)
-        logging.info(string)
-
-
-with Client:
-     Client.loop.run_until_complete(main())
+telegram_launcher()

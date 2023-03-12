@@ -1,3 +1,5 @@
 *.session*
 login.json
 *.log*
+media
+src/__pycache__
