@@ -3,3 +3,5 @@ login.json
 *.log*
 media
 src/__pycache__
+*.jpg
+*.log

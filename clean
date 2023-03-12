@@ -1,0 +1,2 @@
+rm -f *.jpg
+rm -f *.log

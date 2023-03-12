@@ -1,7 +1,8 @@
 {
-  "name" : "some_name",
-  "api_id" : 0,
-  "api_hash" : "hA5h1nHe4e",
-  "channel_id" : "-100000000011",
-  "telegram_login_string" : null
+  "api_id" : 12345678,
+  "api_hash" : "111aalfhlasljkakkflksjalko219u4c",
+  "telegram_channel_id" : "-1000000000000",
+  "discord_channel_id" : 1000000000000000000,
+  "telegram_login_string" : "INPUT_THE_GENERATED_STRING_HERE",
+  "discord_token" : "INPUT_THE_DISCORD_BOT_TOKEN_HERE"
 }
