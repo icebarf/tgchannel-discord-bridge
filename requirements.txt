@@ -1,0 +1,7 @@
+telethon
+discord
+cryptg
+pillow
+aiohttp
+hachoir
+pynacl
