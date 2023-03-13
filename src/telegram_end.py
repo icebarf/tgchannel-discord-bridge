@@ -35,9 +35,11 @@ def load_channels() -> None:
             discord_channels.append(int(key))
 
 
-async def get_and_queue_message(event: Message, text_prefix: str):
+async def get_and_queue_message(event: Message, text_prefix: str, reply: bool):
     if event.chat_id in telegram_channels:
         discord_text = "**" + text_prefix + "**:" + event.text
+        if reply:
+            discord_text = "**Reply** " + discord_text
         media: File = event.file
         file = None
         if media is not None:
@@ -64,8 +66,8 @@ async def message_event_handler(event: Message):
         "telegram: received these channels from discord: {}".format(telegram_channels))
     reply_message = await event.get_reply_message()
     if reply_message is not None:
-        await get_and_queue_message(reply_message, "Old Message")
-    await get_and_queue_message(event, "Update")
+        await get_and_queue_message(reply_message, "Old Message", True)
+    await get_and_queue_message(event, "Update", False)
 
 
 async def telegram_main():
