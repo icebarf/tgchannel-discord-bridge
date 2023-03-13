@@ -1,9 +1,10 @@
 from discord.ext import commands
 from config import logging
-import myutility
-import discord
-import config
 from telegram_end import load_channels
+import config
+import discord
+import myutility
+import telegram_end
 
 
 class Channels(commands.Cog):
@@ -72,6 +73,8 @@ class Channels(commands.Cog):
     @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
     async def stop(self, ctx: commands.Context):
         config.channels.clear()
+        telegram_end.discord_channels.clear()
+        telegram_end.telegram_channels.clear()
         logging.info(
             "discord: stop: cleared channels dictionary. Updates stopped.")
         await ctx.send("discord: Updates have been stopped.\n"
