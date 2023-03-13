@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands
 import os
 
 from config import logging, asyncio
@@ -8,12 +9,12 @@ from telegram_end import telegram_main
 
 async def process_queue(queue: asyncio.Queue, client: discord.Client):
   while True:
-    logging.info("Starting to process queue now")
+    logging.info("discord: Starting to process queue now")
 
     item = await queue.get()
 
-    logging.info("item received")
-    logging.info("Sending item now")
+    logging.info("discord: item received")
+    logging.info("discord: Sending item now")
 
     channel: discord.TextChannel = client.get_channel(discord_channel_id)
 
@@ -25,11 +26,13 @@ async def process_queue(queue: asyncio.Queue, client: discord.Client):
         await channel.send(file=discord.File(media, item[1]))
         os.remove(item[1])
 
-    logging.info("item done")
+    logging.info("discord: item done")
 
     queue.task_done()
 
-class LocalDiscordClientInstance(discord.Client):
+LocalDiscordClient: commands.Bot = None
+
+class LocalDiscordClientInstance(commands.Bot):
   async def setup_hook(self):
     await LocalTelegramClient.start()
     self.loop.create_task(telegram_main())
@@ -41,7 +44,7 @@ class LocalDiscordClientInstance(discord.Client):
 
 
 def main():
-  LocalDiscordClient = LocalDiscordClientInstance(intents=discord.Intents.default())
+  LocalDiscordClient = LocalDiscordClientInstance( command_prefix="u*", intents=discord.Intents.default())
   LocalDiscordClient.run(discord_token, log_handler=log_handler)
   logging.info("discord_telegram: Logging out")
 

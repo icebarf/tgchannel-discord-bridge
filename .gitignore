@@ -1,5 +1,6 @@
 *.session*
 login.json
+login_main_bot.json
 *.log*
 media
 src/__pycache__

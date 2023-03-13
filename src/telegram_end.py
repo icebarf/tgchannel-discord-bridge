@@ -1,6 +1,8 @@
-from config import LocalTelegramClient as Client, telegram_channel_id, message_queue
+from config import TelegramClient, LocalTelegramClient as Client, telegram_channel_id, message_queue
 from config import events, logging
 import asyncio
+
+Client : TelegramClient
 
 @Client.on(events.NewMessage)
 async def message_event_handler(event):
