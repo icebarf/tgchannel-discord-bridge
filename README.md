@@ -58,12 +58,10 @@ u!add 1084482756345614438 -1001699258222 -1001983464181
 u!add 1084482806064885882 -1001759446243
 ```
 
-### `u!save`
-Save the temporary actions of the `u!add` command. This creates a physical file in the bot
-command issuing directory on the server. It contains data in json format.
-
+### `u!begin`
+Start watching for updates in the specified telegram channels and post them on discord
 ```py
-u!save
+u!begin
 ```
 
 ### `u!dump`
@@ -73,16 +71,26 @@ of channels which were added in case of a bot restart.
 u!dump
 ```
 
-### `u!begin`
-Start watching for updates in the specified telegram channels and post them on discord
-```py
-u!begin
-```
 ### `u!ping`
 Acknowledgement command that bot is able to receive and send messages.
 ```py
 u!ping
 ```
+
+### `u!save`
+Save the temporary actions of the `u!add` command. This creates a physical file in the bot
+command issuing directory on the server. It contains data in json format.
+
+```py
+u!save
+```
+
+### `u!stop`
+Clear the internal channels list from where to fetch updates from.
+This is equivalent to a reset but channels from pervious `u!save`
+are still present. To start fresh, simply begin by using `u!add` and 
+so on. If you wish to restart from previous configuration, simply
+issue the `u!begin` command again.
 
 ## Typical Usage
 - Working `login.json`

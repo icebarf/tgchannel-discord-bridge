@@ -28,29 +28,6 @@ class Channels(commands.Cog):
 
     @commands.command()
     @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
-    async def dump(self, ctx: commands.Context):
-        await ctx.send("```json\n" + myutility.dump_channels() + "\n```")
-
-    @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
-    async def save(self, ctx: commands.Context):
-
-        try:
-            myutility.save_channels()
-        except TypeError:
-            await ctx.send("discord: Unable to save channels locally as JSON.")
-        await ctx.send("discord: Saved channels locally as JSON.")
-
-    @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
-    async def ping(self, ctx: commands.Context):
-        await ctx.send("discord: Ping acknowledged.\n"
-                       "Hello, user <@{}>".format(ctx.message.author.id))
-        logging.info("discord: Received a ping from user {} with id {}".format(
-            ctx.message.author.name, ctx.message.author.id))
-
-    @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
     async def begin(self, ctx: commands.Context):
         logging.info("discord: loading channels")
         myutility.load_channels()
@@ -68,6 +45,39 @@ class Channels(commands.Cog):
 
         load_channels()
         logging.info("discord: channel loading sequence finished")
+
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def dump(self, ctx: commands.Context):
+        await ctx.send("```json\n" + myutility.dump_channels() + "\n```")
+
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def ping(self, ctx: commands.Context):
+        await ctx.send("discord: Ping acknowledged.\n"
+                       "Hello, user <@{}>".format(ctx.message.author.id))
+        logging.info("discord: Received a ping from user {} with id {}".format(
+            ctx.message.author.name, ctx.message.author.id))
+
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def save(self, ctx: commands.Context):
+        try:
+            myutility.save_channels()
+        except TypeError:
+            await ctx.send("discord: Unable to save channels locally as JSON.")
+        await ctx.send("discord: Saved channels locally as JSON.")
+
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def stop(self, ctx: commands.Context):
+        config.channels.clear()
+        logging.info(
+            "discord: stop: cleared channels dictionary. Updates stopped.")
+        await ctx.send("discord: Updates have been stopped.\n"
+                       "Restart updates by using the `u!begin` command or"
+                       " Use `u!add` and `u!save` to start with a new set of channels"
+                       " to fetch updates from")
 
     @add.error
     async def add_error(cog, ctx: commands.Context, error):
