@@ -1,5 +1,6 @@
 *.session*
 login.json
+channels.json
 login_main_bot.json
 *.log*
 media

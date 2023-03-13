@@ -1,2 +1,3 @@
 rm -f *.jpg
 rm -f *.log
+rm -f channels.json

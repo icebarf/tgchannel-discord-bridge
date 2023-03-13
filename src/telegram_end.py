@@ -2,8 +2,6 @@ from config import TelegramClient, LocalTelegramClient as Client, telegram_chann
 from config import events, logging
 import asyncio
 
-Client : TelegramClient
-
 @Client.on(events.NewMessage)
 async def message_event_handler(event):
     logging.info("telegram: Message handler was called")
