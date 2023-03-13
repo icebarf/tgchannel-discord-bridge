@@ -2,12 +2,10 @@ import discord
 from discord.ext import commands
 import os
 
-import myutility
 import discord_cogs
 
 from config import logging, asyncio
 from config import discord_token, log_handler
-from config import discord_channel_id
 import config
 from telegram_end import telegram_main
 
