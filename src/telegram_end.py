@@ -1,6 +1,7 @@
 from config import logging
 from telethon import events
 from telethon.tl.custom.file import File
+from telethon.tl.custom.message import Message
 import asyncio
 import config
 import os
@@ -34,17 +35,9 @@ def load_channels() -> None:
             discord_channels.append(int(key))
 
 
-@config.LocalTelegramClient.on(events.NewMessage)
-async def message_event_handler(event: events.NewMessage):
-    logging.info("telegram: Message handler was called")
-    logging.info("telegram: Chat Id: " + str(event.chat_id))
-
-    logging.info(
-        "telegram: received these channels from discord: {}".format(telegram_channels))
-
-    discord_text = event.text
-
+async def get_and_queue_message(event: Message, text_prefix: str = "Update:"):
     if event.chat_id in telegram_channels:
+        discord_text = "**" + text_prefix + "**:" + event.text
         media: File = event.file
         file = None
         if media is not None:
@@ -60,6 +53,18 @@ async def message_event_handler(event: events.NewMessage):
         await config.message_queue.put(item)
         logging.info("telegram: %s", event.text)
         logging.info("telegram: exiting the message_event_handler()")
+
+
+@config.LocalTelegramClient.on(events.NewMessage)
+async def message_event_handler(event: Message):
+    logging.info("telegram: Message handler was called")
+    logging.info("telegram: Chat Id: " + str(event.chat_id))
+    logging.info(
+        "telegram: received these channels from discord: {}".format(telegram_channels))
+    reply_message = await event.get_reply_message()
+    if reply_message is not None:
+        get_and_queue_message(reply_message, "Old Message:")
+    get_and_queue_message(event)
 
 
 async def telegram_main():
