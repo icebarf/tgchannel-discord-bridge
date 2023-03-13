@@ -3,7 +3,7 @@
   "api_hash" : "111aalfhlasljkakkflksjalko219u4c",
   "telegram_login_string" : "INPUT_THE_GENERATED_STRING_HERE",
   "discord_token" : "INPUT_THE_DISCORD_BOT_TOKEN_HERE",
-  "media_download" : "/var/www/html/somewhere/",
+  "media_location" : "/var/www/html/somewhere/",
   "media_url" : "https://media.somewhere.in/dump/",
   "discord_admins" : ["491805157743656960"]
 }
