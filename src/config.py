@@ -25,7 +25,7 @@ with open("login.json", "r", encoding="utf-8") as file:
     api_hash = json_data["api_hash"]
     telegram_login_string = json_data["telegram_login_string"]
     discord_token = json_data["discord_token"]
-    media_location = json_data["media_download"]
+    media_location = json_data["media_location"]
     media_url = json_data["media_url"]
     discord_admins = json_data["discord_admins"]
     file.close()
