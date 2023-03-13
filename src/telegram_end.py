@@ -35,7 +35,7 @@ def load_channels() -> None:
             discord_channels.append(int(key))
 
 
-async def get_and_queue_message(event: Message, text_prefix: str = "Update:"):
+async def get_and_queue_message(event: Message, text_prefix: str):
     if event.chat_id in telegram_channels:
         discord_text = "**" + text_prefix + "**:" + event.text
         media: File = event.file
@@ -46,7 +46,8 @@ async def get_and_queue_message(event: Message, text_prefix: str = "Update:"):
             if media.size >= (7.5 * 1024 * 1024):
                 url = server_copy(file)
                 file = None
-                discord_text = url
+                discord_text = discord_text + \
+                    "\nMedia too large. Here's a direct link: " + url
 
         item = [discord_channels[telegram_channels.index(
             event.chat_id)], discord_text, file]
@@ -63,8 +64,8 @@ async def message_event_handler(event: Message):
         "telegram: received these channels from discord: {}".format(telegram_channels))
     reply_message = await event.get_reply_message()
     if reply_message is not None:
-        get_and_queue_message(reply_message, "Old Message:")
-    get_and_queue_message(event)
+        await get_and_queue_message(reply_message, "Old Message")
+    await get_and_queue_message(event, "Update")
 
 
 async def telegram_main():
