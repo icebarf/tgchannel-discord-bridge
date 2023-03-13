@@ -5,3 +5,4 @@ pillow
 aiohttp
 hachoir
 pynacl
+json5

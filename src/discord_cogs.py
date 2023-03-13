@@ -1,38 +1,78 @@
-import myutility, discord
-from config import logging
 from discord.ext import commands
+from config import logging
+import myutility
+import discord
+import config
+from telegram_end import load_channels
+
 
 class Channels(commands.Cog):
-  def __init__(self, bot: commands.Bot) -> None:
-    self.bot = bot
+    def __init__(self, bot: commands.Bot) -> None:
+        self.bot = bot
 
-  @commands.command()
-  async def add(self, ctx: discord.TextChannel, discord: str, telegram: str):
-    logging.info("discord: add() receieved telegram: {0}, discord {1}".format(telegram, discord))
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def add(self, ctx: commands.Context, discord: str, *telegram):
+        logging.info("discord: add() receieved telegram: {0}, discord {1}".format(
+            telegram, discord))
+        tg = list(telegram)
+        for str in tg:
+            if str[:4] != '-100':
+                await ctx.send("discord: Error: telegram channel id should always start with `-` sign. " +
+                               "Append `-100` to whatever channel id you have if you believe it is correct.")
+                return
 
-    if telegram[:4] != '-100':
-      await ctx.send("discord: Error: telegram channel id should always start with `-` sign. " +
-               "Append `-100` to whatever channel id you have if you believe it is correct.")
-      return
+        myutility.add_channel(tg, discord)
+        await ctx.send("discord: associated <#{}> with telegram id `{}` in memory.".format(discord, tg)
+                       + "\nChanges are not final yet. When you're done `add`ing. Issue `save` command.")
 
-    myutility.add_channel(telegram, discord)
-    await ctx.send("discord: associated <#{}> with telegram id `{}` in memory.".format(discord, telegram))
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def dump(self, ctx: commands.Context):
+        await ctx.send("```json\n" + myutility.dump_channels() + "\n```")
 
-  @commands.command()
-  async def save(self, ctx: discord.TextChannel):
-    logging.info("discord: We're inside the save command now")
-    try:
-      myutility.save_channels()
-    except TypeError:
-      await ctx.send("discord: Unable to save channels locally as JSON.")
-    await ctx.send("discord: Saved channels locally as JSON.")
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def save(self, ctx: commands.Context):
 
-  @add.error
-  async def add_error(cog, ctx: discord.TextChannel, error):
-    if isinstance(error, commands.MissingRequiredArgument):
-      await ctx.send("`add` command used incorrectly.\n"
-                     "Required arguments: `discord_id` `telegram_id`\n"
-                     "Example: `u!add 1084119900014518000 -10017000021450`")
+        try:
+            myutility.save_channels()
+        except TypeError:
+            await ctx.send("discord: Unable to save channels locally as JSON.")
+        await ctx.send("discord: Saved channels locally as JSON.")
 
-async def setup(bot: commands.Bot) -> None:
-    bot.add_cog(Channels(bot))
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def ping(self, ctx: commands.Context):
+        await ctx.send("discord: Ping acknowledged.\n"
+                       "Hello, user <@{}>".format(ctx.message.author.id))
+        logging.info("discord: Received a ping from user {} with id {}".format(
+            ctx.message.author.name, ctx.message.author.id))
+
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def begin(self, ctx: commands.Context):
+        logging.info("discord: loading channels")
+        myutility.load_channels()
+        logging.info("discord: loaded channels")
+        logging.info("discord: channels list: {}".format(config.channels))
+
+        logging.info(
+            "discord: Beginning update sequence in respective channels.")
+        await ctx.send("discord: Beginning update sequence in respective channels.")
+        for id in config.channels:
+            logging.info("discord: begin: id: {}".format(int(id)))
+            channel: discord.guild.GuildChannel = self.bot.get_channel(int(id))
+            if channel:
+                await channel.send("discord: Bot initiated. Watching for updates...")
+
+        load_channels()
+        logging.info("discord: channel loading sequence finished")
+
+    @add.error
+    async def add_error(cog, ctx: commands.Context, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("`add` command used incorrectly.\n"
+                           "Required arguments: `discord_id` `telegram_id`\n"
+                           "Example: `u!add 1084119900014518000 -10017000021450`\n"
+                           "`u!add 1084119907958018148 -10017594462431 -1001759446243`")
