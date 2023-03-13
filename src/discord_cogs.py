@@ -75,6 +75,9 @@ class Channels(commands.Cog):
         config.channels.clear()
         telegram_end.discord_channels.clear()
         telegram_end.telegram_channels.clear()
+        while not config.message_queue.empty():
+            config.message_queue.get_nowait()
+            config.message_queue.task_done()
         logging.info(
             "discord: stop: cleared channels dictionary. Updates stopped.")
         await ctx.send("discord: Updates have been stopped.\n"
