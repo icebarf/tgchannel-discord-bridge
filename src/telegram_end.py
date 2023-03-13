@@ -7,13 +7,6 @@ import config
 import os
 import shutil
 
-
-def server_copy(file: str, /) -> str:
-    shutil.copy(file, config.media_location)
-    os.remove(file)
-    return config.media_url + file
-
-
 telegram_channels: list = []
 discord_channels: list = []  # associated discord channel
 # the reason both are separate and not a dictionary is
@@ -21,6 +14,12 @@ discord_channels: list = []  # associated discord channel
 # value(s) or telegram channel(s) is not unique i.e
 # for a single discord channel, there are multiple
 # telegram channels
+
+
+def server_copy(file: str, /) -> str:
+    shutil.copy(file, config.media_location)
+    os.remove(file)
+    return config.media_url + file
 
 
 def load_channels() -> None:
@@ -37,7 +36,7 @@ def load_channels() -> None:
 
 async def get_and_queue_message(event: Message, text_prefix: str):
     if event.chat_id in telegram_channels:
-        discord_text = "**" + text_prefix + "**: " + event.text
+        discord_text = "**" + text_prefix + "**:\n" + event.text
         media: File = event.file
         file = None
         if media is not None:
