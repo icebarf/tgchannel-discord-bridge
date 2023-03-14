@@ -24,6 +24,9 @@ def server_copy(file: str, /) -> str:
 
 def load_channels() -> None:
     global telegram_channels
+    global discord_channels
+    telegram_channels = []
+    discord_channels = []
     for key, value in config.channels.items():
         if isinstance(value, list):
             for item in value:
