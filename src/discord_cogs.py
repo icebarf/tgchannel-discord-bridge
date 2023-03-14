@@ -69,7 +69,7 @@ class Channels(commands.Cog):
         await ctx.send("```json\n" + myutility.dump_channels() + "\n```")
 
     @commands.command()
-    async def help(self, ctx: commands.Context):
+    async def send_help(self, ctx: commands.Context):
         await ctx.send("<https://github.com/icebarf/tgchannel-discord-bridge#discord-commands>"
                        "\n<https://github.com/icebarf/tgchannel-discord-bridge#use-examples-in-a-discord-server>")
 
