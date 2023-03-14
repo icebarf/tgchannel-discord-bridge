@@ -174,9 +174,10 @@ u!save
 u!begin
 ```
 
-6. Using for the first time, you know how to setup an
-active public directory on server and you have setup `login.json`
-accordingly. The parameters for discord channels and server boosts
+6. Using for the first time, you have setup an
+active public directory on some webserver that is pointed to
+by a domain set in `media_url` and you have setup `login.json`
+. The parameters for discord channels and server boosts
 are same as 5.
 
 ```py
@@ -188,7 +189,7 @@ u!toggle_small_uploads
 u!begin
 ```
 
-This turns of default small uploads option and the default behavior becomes:
+This turns ofo default small uploads option and the default behavior becomes:
 copy file to `media_location` and append the file name to `media_url`. The bot
 will then post that URL on discord.
 
