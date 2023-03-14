@@ -8,7 +8,7 @@ import os
 import shutil
 
 media_max: int = 50 * 1024 * 1024
-media_min: int = 4.0 * 1024 * 1024
+media_min: int = 7.9 * 1024 * 1024
 telegram_channels: list = []
 discord_channels: list = []  # associated discord channel
 # the reason both are separate and not a dictionary is
