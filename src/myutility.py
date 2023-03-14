@@ -34,12 +34,14 @@ def save_channels() -> None:
     logging.info("discord: successfully saved channels as JSON locally.")
     config.channels.clear()
     channels_file.close()
+    logging.info("discord: closed file {}".format(filename))
 
 
 def dump_channels() -> str:
     channels_file = get_file(filename, "r")
     raw_json = channels_file.read()
     channels_file.close()
+    logging.info("discord: closed file {}".format(filename))
     return raw_json
 
 
