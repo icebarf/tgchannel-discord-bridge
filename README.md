@@ -1,3 +1,8 @@
+The bridge bot posts messages from telegram broadcast channels over to discord channels.
+This is something I worked on in my free time, it's meant for private use but you
+can use it for yourself with a little figuring out.
+It was made public in good faith.
+
 ## Get this shit running
 
 - Copy `login_copy.json` to `login.json`
