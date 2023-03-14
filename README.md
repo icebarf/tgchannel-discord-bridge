@@ -196,3 +196,10 @@ will then post that URL on discord.
 The bot will directly download and upload the media to discord if it is less than 7.5 Mega Bytes.
 Otherwise, the bot will download it locally and then move it to `media_location` as specified in `login_copy.json`.
 Then it will append the downlaoded file name to `media_url` and post a direct link to there.
+
+
+## Note
+This is the first time I've written python in 2 years, so pardon me
+if the code quality is terrible or not upto standards.
+
+Thank you.
