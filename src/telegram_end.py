@@ -20,6 +20,7 @@ from telethon.tl.custom.file import File
 from telethon.tl.custom.message import Message
 import asyncio
 import config
+import myutility
 import os
 import shutil
 
@@ -85,7 +86,17 @@ async def get_and_queue_message(event: Message, text_prefix: str):
                 logging.info(
                     "telegram: Downloaded media file at : " + file)
 
-            # copy the media to webserver public directory if it follows these conditions
+            if event.video or event.video_note:
+                logging.info(
+                    "telegram: found a video file called {}".format(file))
+                logging.info("telegram: converting video to mp4 format")
+                file2 = myutility.convert_to_mp4(file)
+                os.remove(file)
+                file = file2
+                logging.info(
+                    "telegram: conversion successfull, returned {}".format(file))
+
+                # copy the media to webserver public directory if it follows these conditions
             if (media_size > media_min) and (config.small_uploads_only == False)\
                     and (config.large_upload_to_discord == False):
                 url = server_copy(file)

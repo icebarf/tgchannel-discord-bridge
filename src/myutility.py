@@ -15,8 +15,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from config import logging
-import config
 from io import TextIOWrapper
+import config
+import ffmpeg
 import json5
 
 filename: str = "channels.json"
@@ -69,3 +70,15 @@ def load_channels() -> None:
     channels_file.close()
     if not isinstance(config.channels, dict):
         raise TypeError("JSON loader did not return a dictionary")
+
+
+def convert_to_mp4(file: str) -> str:
+    i: int = file.rfind(".")
+    output = file[:i] + ".mp4"
+    (
+        ffmpeg
+        .input(file)
+        .output(output, codec='copy')
+        .run()
+    )
+    return output
