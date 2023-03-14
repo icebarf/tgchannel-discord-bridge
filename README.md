@@ -92,17 +92,17 @@ so on. If you wish to restart from previous configuration, simply
 issue the `u!begin` command again.
 
 ### `u!toggle_direct_large_uploads`
-Toggles b/w server uploads and direct uploads for media larger than the free
-limit specified by discord, i.e 8 MB. (Actual limit enforced in code is 7.9 MB). Direct large uploads to discord and copying to web server options are
-disabled by default.
+Toggles b/w keeping files on server and direct uploads for media larger than the free
+limit specified by discord, i.e 8 MB. (Actual limit enforced in code is 7.9 MB). This option is disabled by default. The default is that the bot will only post
+media smaller than 8 MB.
 ```py
-u!toggle_direct_upload
+u!toggle_direct_large_uploads
 ```
 
 ### `u!toggle_small_uploads`
 Toggles the switch to only allow uploads for media smaller than 8 MB (7.9 MB in code). Small uploads are enabled by default.
 ```py
-u!toggle_direct_upload
+u!toggle_small_uploads
 ```
 
 ## Typical Usage
@@ -147,6 +147,9 @@ The bot will now upload media upto 100 MB to the discord server directly.
 If the server has reached Level 2, it will only upload upto 50 MB.
 For Level 3, it is 100 MB.
 
+> Disabling small uploads unlocks the limit placed. Media files
+smaller than 8 MB will still be uploaded.
+
 4. Using for the first time, associate single discord channel with
 multiple channels. Server doesn't have any boosts.
 
@@ -179,6 +182,10 @@ u!save
 u!toggle_small_uploads
 u!begin
 ```
+
+This turns of default small uploads option and the default behavior becomes:
+copy file to `media_location` and append the file name to `media_url`. The bot
+will then post that URL on discord.
 
 ## Semantics
 The bot will directly download and upload the media to discord if it is less than 7.5 Mega Bytes.
