@@ -54,6 +54,20 @@ class Channels(commands.Cog):
 
     @commands.command()
     @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def toggle_direct_upload(self, ctx: commands.Context):
+        if config.upload_to_discord:
+            config.upload_to_discord = False
+            await ctx.send("discord: direct uploads to discord disabled"
+                           " for media larger than `7.9MB`.")
+            logging.info("discord: disable direct uploads to discord for media"
+                         " larger than 7.9 MB")
+        else:
+            config.upload_to_discord = True
+            await ctx.send("discord: direct media uploads to discord enabled"
+                           " for media size `x` where `7.9MB < x <= 50MB`")
+
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
     async def ping(self, ctx: commands.Context):
         await ctx.send("discord: Ping acknowledged.\n"
                        "Hello, user <@{}>".format(ctx.message.author.id))
@@ -73,11 +87,9 @@ class Channels(commands.Cog):
     @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
     async def stop(self, ctx: commands.Context):
         config.channels.clear()
-        telegram_end.discord_channels.clear()
-        telegram_end.telegram_channels.clear()
-        while not config.message_queue.empty():
-            config.message_queue.get_nowait()
-            config.message_queue.task_done()
+        telegram_end.discord_channels = []
+        telegram_end.telegram_channels = []
+        config.message_queue = config.asyncio.Queue(config.Qmaxsize)
         logging.info(
             "discord: stop: cleared channels dictionary. Updates stopped.")
         await ctx.send("discord: Updates have been stopped.\n"

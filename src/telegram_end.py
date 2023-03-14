@@ -7,6 +7,8 @@ import config
 import os
 import shutil
 
+media_max: int = 50 * 1024 * 1024
+media_min: int = 4.0 * 1024 * 1024
 telegram_channels: list = []
 discord_channels: list = []  # associated discord channel
 # the reason both are separate and not a dictionary is
@@ -45,7 +47,8 @@ async def get_and_queue_message(event: Message, text_prefix: str):
         if media is not None:
             file = await event.download_media()
             logging.info("telegram: Downloaded media file at : " + file)
-            if media.size >= (7.5 * 1024 * 1024):
+            if (media.size > media_min) and (media.size <= media_max) \
+                    and (config.upload_to_discord == False):
                 url = server_copy(file)
                 file = None
                 discord_text = discord_text + \

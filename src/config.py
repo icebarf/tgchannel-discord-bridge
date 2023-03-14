@@ -35,6 +35,9 @@ LocalTelegramClient: TelegramClient = TelegramClient(StringSession(
     telegram_login_string), api_id, api_hash, sequential_updates=True)
 
 # Set up the message queue
-message_queue: asyncio.Queue = asyncio.Queue(maxsize=25)
+Qmaxsize: int = 25
+message_queue: asyncio.Queue = asyncio.Queue(Qmaxsize)
 
-channels: dict = {}
+# misc variables
+channels: dict = {}  # dictionary to dump for channels
+upload_to_discord: bool = False
