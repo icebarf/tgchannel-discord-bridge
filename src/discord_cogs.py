@@ -1,3 +1,19 @@
+# discord_cogs.py - functions defining the discord bot's interface
+# Copyright (C) 2023 Amritpal Singh
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 from discord.ext import commands
 from config import logging
 from telegram_end import load_channels
@@ -53,6 +69,11 @@ class Channels(commands.Cog):
         await ctx.send("```json\n" + myutility.dump_channels() + "\n```")
 
     @commands.command()
+    async def help(self, ctx: commands.Context):
+        await ctx.send("<https://github.com/icebarf/tgchannel-discord-bridge#discord-commands>"
+                       "\n<https://github.com/icebarf/tgchannel-discord-bridge#use-examples-in-a-discord-server>")
+
+    @commands.command()
     @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
     async def ping(self, ctx: commands.Context):
         await ctx.send("discord: Ping acknowledged.\n"
@@ -68,6 +89,10 @@ class Channels(commands.Cog):
         except TypeError:
             await ctx.send("discord: Unable to save channels locally as JSON.")
         await ctx.send("discord: Saved channels locally as JSON.")
+
+    @commands.command()
+    async def source(self, ctx: commands.Context):
+        await ctx.send("https://github.com/icebarf/tgchannel-discord-bridge")
 
     @commands.command()
     @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
