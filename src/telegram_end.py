@@ -7,7 +7,7 @@ import config
 import os
 import shutil
 
-media_max: int = 50 * 1024 * 1024
+media_max: int = 100 * 1024 * 1024
 media_min: int = 7.9 * 1024 * 1024
 telegram_channels: list = []
 discord_channels: list = []  # associated discord channel
@@ -41,21 +41,44 @@ def load_channels() -> None:
 
 async def get_and_queue_message(event: Message, text_prefix: str):
     if event.chat_id in telegram_channels:
-        discord_text = "**" + text_prefix + "**:\n" + event.text
+        discord_text: str = "**" + text_prefix + "**:\n" + event.text
         media: File = event.file
-        file = None
+        media_size: int = None
+        file: str = None
         if media is not None:
-            file = await event.download_media()
-            logging.info("telegram: Downloaded media file at : " + file)
-            if (media.size > media_min) and (media.size <= media_max) \
-                    and (config.upload_to_discord == False):
+            media_size = media.size
+            if config.small_uploads_only:
+                if media_size <= media_min:
+                    file = await event.download_media()
+                    logging.info(
+                        "telegram: Downloaded media file at : " + file)
+                else:
+                    discord_text = discord_text + \
+                        "\nMedia attachment too large, only small uploads are enabled."
+            elif config.large_upload_to_discord:
+                if media_size <= media_max:
+                    file = await event.download_media()
+                    logging.info(
+                        "telegram: Downloaded media file at : " + file)
+                else:
+                    discord_text = discord_text + \
+                        "\nMedia attachment too large, maximum upload size with " \
+                        "Level 3 boost allowed is 100 Mega Bytes."
+            else:
+                file = await event.download_media()
+                logging.info(
+                    "telegram: Downloaded media file at : " + file)
+
+            # copy the media to webserver public directory if it follows these conditions
+            if (media_size > media_min) and (config.small_uploads_only == False)\
+                    and (config.large_upload_to_discord == False):
                 url = server_copy(file)
                 file = None
                 discord_text = discord_text + \
-                    "\nMedia too large. Here's a direct link: " + url
+                    "\nMedia attachment too large. Here's a direct link: " + url
 
         item = [discord_channels[telegram_channels.index(
-            event.chat_id)], discord_text, file]
+            event.chat_id)], discord_text, file, media_size]
         await config.message_queue.put(item)
         logging.info("telegram: %s", event.text)
         logging.info("telegram: exiting the message_event_handler()")
@@ -71,7 +94,7 @@ async def message_event_handler(event: Message):
     update_str = "Update"
     if reply_message is not None:
         await get_and_queue_message(reply_message, "Old " + update_str)
-        update_str = "Reply to old " + update_str
+        update_str = "Reply to Old " + update_str
     await get_and_queue_message(event, update_str)
 
 

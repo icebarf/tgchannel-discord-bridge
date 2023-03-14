@@ -54,20 +54,6 @@ class Channels(commands.Cog):
 
     @commands.command()
     @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
-    async def toggle_direct_upload(self, ctx: commands.Context):
-        if config.upload_to_discord:
-            config.upload_to_discord = False
-            await ctx.send("discord: direct uploads to discord disabled"
-                           " for media larger than `7.9MB`.")
-            logging.info("discord: disable direct uploads to discord for media"
-                         " larger than 7.9 MB")
-        else:
-            config.upload_to_discord = True
-            await ctx.send("discord: direct media uploads to discord enabled"
-                           " for media size `x` where `7.9MB < x <= 50MB`")
-
-    @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
     async def ping(self, ctx: commands.Context):
         await ctx.send("discord: Ping acknowledged.\n"
                        "Hello, user <@{}>".format(ctx.message.author.id))
@@ -96,6 +82,42 @@ class Channels(commands.Cog):
                        "Restart updates by using the `u!begin` command or"
                        " Use `u!add` and `u!save` to start with a new set of channels"
                        " to fetch updates from")
+
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def toggle_direct_large_uploads(self, ctx: commands.Context):
+        config.large_upload_to_discord = not config.large_upload_to_discord
+        if config.large_upload_to_discord:
+            await ctx.send("discord: Enabled: direct media uploads to discord"
+                           " for media size `x` where `7.9MB < x <= 100MB`")
+            logging.info("discord: Enabled: direct media uploads to discord"
+                         " larger than 7.9 MB")
+        else:
+            await ctx.send("discord: Disabled: direct media uploads to discord"
+                           " for media size `x` where `7.9MB < x <= 100MB`")
+            logging.info("discord: Disabled: direct media uploads to discord"
+                         " larger than 7.9 MB")
+
+    @commands.command()
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    async def toggle_small_uploads(self, ctx: commands.Context):
+        config.small_uploads_only = not config.small_uploads_only
+        if config.small_uploads_only:
+            await ctx.send("discord: Enabled: Small media upload.\n"
+                           "Media only smaller than or equal to {} Mega Bytes is allowed".format(
+                               (telegram_end.media_min / 1024) / 1024))
+            logging.info("discord: Enabled: Small media upload.\n"
+                         "Media only smaller than or equal to {} Mega Bytes is allowed".format(
+                             (telegram_end.media_min / 1024) / 1024))
+        else:
+            await ctx.send("discord: Disabled: Small media uploads.\n"
+                           "Media larger than {} Mega Bytes is allowed. Depending on your configuraiton"
+                           " the media will be directly uploaded to discord or saved at the public directory of webserver".format(
+                               (telegram_end.media_min / 1024) / 1024))
+            logging.info("discord: Disabled: Small media uploads.\n"
+                         "Media larger than {} Mega Bytes is allowed. Depending on your configuraiton"
+                         " the media will be directly uploaded to discord or saved at the public directory of webserver".format(
+                             (telegram_end.media_min / 1024) / 1024))
 
     @add.error
     async def add_error(cog, ctx: commands.Context, error):

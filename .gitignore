@@ -2,6 +2,7 @@
 login.json
 channels.json
 login_main_bot.json
+login_other_bot.json
 *.log*
 media
 src/__pycache__

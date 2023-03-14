@@ -40,4 +40,5 @@ message_queue: asyncio.Queue = asyncio.Queue(Qmaxsize)
 
 # misc variables
 channels: dict = {}  # dictionary to dump for channels
-upload_to_discord: bool = False
+large_upload_to_discord: bool = False
+small_uploads_only: bool = True

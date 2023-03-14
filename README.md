@@ -76,13 +76,6 @@ Acknowledgement command that bot is able to receive and send messages.
 u!ping
 ```
 
-### `u!toggle_direct_upload`
-Toggles b/w server uploads and direct uploads for media larger than the free
-limit specified by discord, i.e 8 MB.
-```py
-u!toggle_direct_upload
-```
-
 ### `u!save`
 Save the temporary actions of the `u!add` command. This creates a physical file in the bot
 command issuing directory on the server. It contains data in json format.
@@ -98,6 +91,20 @@ are still present. To start fresh, simply begin by using `u!add` and
 so on. If you wish to restart from previous configuration, simply
 issue the `u!begin` command again.
 
+### `u!toggle_direct_large_uploads`
+Toggles b/w server uploads and direct uploads for media larger than the free
+limit specified by discord, i.e 8 MB. (Actual limit enforced in code is 7.9 MB). Direct large uploads to discord and copying to web server options are
+disabled by default.
+```py
+u!toggle_direct_upload
+```
+
+### `u!toggle_small_uploads`
+Toggles the switch to only allow uploads for media smaller than 8 MB (7.9 MB in code). Small uploads are enabled by default.
+```py
+u!toggle_direct_upload
+```
+
 ## Typical Usage
 - Working `login.json`
 - Run `src/main.py`
@@ -108,6 +115,70 @@ then put `-100` before it when you issue `u!add`
 - On discord, issue `u!add`
 - After that save it using `u!save`
 - Start seeing the magic with `u!begin`
+
+## Use examples in a discord server
+
+1. Using for the first time, associate a single discord channel with a single telegram channel only. Server does not have boosts or web server directory.
+
+```py
+u!add 1084482806064885882 -1001759446243
+u!save
+u!begin
+```
+
+2. Bot is restarted or say a configuration already exists. Rest paramters
+are same as 1.
+```py
+u!begin
+```
+
+3. Using for the first time, associate a single discord channel with
+a single telegram channel only. Server has a level 2 or level 3 boost
+
+```py
+u!add 1084482806064885882 -1001759446243
+u!save
+u!toggle_small_uploads
+u!toggle_direct_large_uploads
+u!begin
+```
+
+The bot will now upload media upto 100 MB to the discord server directly.
+If the server has reached Level 2, it will only upload upto 50 MB.
+For Level 3, it is 100 MB.
+
+4. Using for the first time, associate single discord channel with
+multiple channels. Server doesn't have any boosts.
+
+```py
+u!add 1084482756345614438 -1001699258222 -1001983464181
+u!save
+u!begin
+```
+
+5. Using for the first time, associate different discord channels with different telegram channels. Server doesn't have any boosts.
+
+```py
+u!add 1084482756345614438 -1001699258222 
+u!add 1084482776826380440 -1001983464181
+u!add 1084482806064885882 -1001699124902 -1001981249892
+u!save
+u!begin
+```
+
+6. Using for the first time, you know how to setup an
+active public directory on server and you have setup `login.json`
+accordingly. The parameters for discord channels and server boosts
+are same as 5.
+
+```py
+u!add 1084482756345614438 -1001699258222 
+u!add 1084482776826380440 -1001983464181
+u!add 1084482806064885882 -1001699124902 -1001981249892
+u!save
+u!toggle_small_uploads
+u!begin
+```
 
 ## Semantics
 The bot will directly download and upload the media to discord if it is less than 7.5 Mega Bytes.

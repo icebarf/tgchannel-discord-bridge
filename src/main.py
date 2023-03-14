@@ -8,6 +8,10 @@ from config import logging, asyncio
 from config import discord_token, log_handler
 import config
 from telegram_end import telegram_main
+import telegram_end
+
+BoostLevel2: int = 7
+BoostLevel3: int = 14
 
 
 async def process_queue(queue: asyncio.Queue, client: discord.Client) -> None:
@@ -19,15 +23,25 @@ async def process_queue(queue: asyncio.Queue, client: discord.Client) -> None:
         logging.info("discord: item received")
         logging.info("discord: Sending item now")
 
-        channel: discord.TextChannel = client.get_channel(item[0])
-
+        discord_channel: discord.TextChannel = client.get_channel(item[0])
+        discord_text: str = item[1]
+        discord_attachment: str = item[2]
+        discord_attachment_size: int = item[3]
+        boost_cnt: int = discord_channel.guild.premium_subscription_count
         # check necessary where multiple media files are sent from telegram
-        if item[1]:
-            await channel.send(item[1])
-        if item[2]:
-            with open(item[2], "rb") as media:
-                await channel.send(file=discord.File(media, item[2]))
-                os.remove(item[2])
+        if discord_text:
+            await discord_channel.send(discord_text)
+        if discord_attachment:
+            with open(discord_attachment, "rb") as media:
+                if (boost_cnt >= BoostLevel3) and (discord_attachment_size <= telegram_end.media_max):
+                    await discord_channel.send(file=discord.File(media, discord_attachment))
+                elif (boost_cnt >= BoostLevel2 and boost_cnt < BoostLevel3) and (discord_attachment_size <= (telegram_end.media_max / 2)):
+                    await discord_channel.send(file=discord.File(media, discord_attachment))
+                elif (discord_attachment_size <= telegram_end.media_min):
+                    await discord_channel.send(file=discord.File(media, discord_attachment))
+                else:
+                    await discord_channel.send("Media too large for non boosted server.")
+                os.remove(discord_attachment)
 
         logging.info("discord: item done")
         queue.task_done()
