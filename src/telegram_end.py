@@ -66,7 +66,7 @@ async def get_and_queue_message(event: Message, text_prefix: str):
             media_size = media.size
             if config.small_uploads_only:
                 if media_size <= media_min:
-                    file = await event.download_media()
+                    file = await event.download_media(file="output"+media.ext)
                     logging.info(
                         "telegram: Downloaded media file at : " + file)
                 else:
@@ -74,7 +74,7 @@ async def get_and_queue_message(event: Message, text_prefix: str):
                         "\nMedia attachment too large, only small uploads are enabled."
             elif config.large_upload_to_discord:
                 if media_size <= media_max:
-                    file = await event.download_media()
+                    file = await event.download_media(file="output"+media.ext)
                     logging.info(
                         "telegram: Downloaded media file at : " + file)
                 else:
@@ -82,7 +82,7 @@ async def get_and_queue_message(event: Message, text_prefix: str):
                         "\nMedia attachment too large, maximum upload size with " \
                         "Level 3 boost allowed is 100 Mega Bytes."
             else:
-                file = await event.download_media()
+                file = await event.download_media(file="output"+media.ext)
                 logging.info(
                     "telegram: Downloaded media file at : " + file)
 
