@@ -6,4 +6,3 @@ aiohttp
 hachoir
 pynacl
 json5
-ffmpeg-python
