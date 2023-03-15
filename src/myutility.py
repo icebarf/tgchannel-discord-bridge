@@ -75,12 +75,6 @@ def load_channels() -> None:
 def convert_to_mp4(file: str) -> str:
     i: int = file.rfind(".")
     output = file[:i] + ".mp4"
-    # (
-    #     ffmpeg
-    #     .input(file)
-    #     .output(output, codec='copy')
-    #     .run()
-    # )
-    # return output
-    os.system('ffmpeg -i {} -codec copy {}'.format(file, output))
+    os.system(
+        'ffmpeg -nostdin -loglevel error -i {} -codec copy {}'.format(file, output))
     return output
