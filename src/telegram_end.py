@@ -87,14 +87,15 @@ async def get_and_queue_message(event: Message, text_prefix: str):
                     "telegram: Downloaded media file at : " + file)
 
             if (event.video or event.video_note) and file:
-                logging.info(
-                    "telegram: found a video file called {}".format(file))
-                logging.info("telegram: converting video to mp4 format")
-                file2 = myutility.convert_to_mp4(file)
-                os.remove(file)
-                file = file2
-                logging.info(
-                    "telegram: conversion successfull, returned {}".format(file))
+                if not file.endswith(".mp4"):
+                    logging.info(
+                        "telegram: found a video file called {}".format(file))
+                    logging.info("telegram: converting video to mp4 format")
+                    file2 = myutility.convert_to_mp4(file)
+                    os.remove(file)
+                    file = file2
+                    logging.info(
+                        "telegram: conversion successfull, returned {}".format(file))
 
                 # copy the media to webserver public directory if it follows these conditions
             if (media_size > media_min) and (config.small_uploads_only == False)\
