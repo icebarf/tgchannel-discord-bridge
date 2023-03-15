@@ -86,7 +86,7 @@ async def get_and_queue_message(event: Message, text_prefix: str):
                 logging.info(
                     "telegram: Downloaded media file at : " + file)
 
-            if event.video or event.video_note:
+            if event.video or event.video_note and (file is not None):
                 logging.info(
                     "telegram: found a video file called {}".format(file))
                 logging.info("telegram: converting video to mp4 format")
