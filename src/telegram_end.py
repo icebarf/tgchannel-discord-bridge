@@ -136,7 +136,7 @@ async def telegram_main():
 
     async for dialog in config.LocalTelegramClient.iter_dialogs():
         string = dialog.name + ' has ID ' + str(dialog.id)
-    logging.info("telegram: %s", string)
+        logging.info("telegram: %s", string)
 
     while True:
         await asyncio.sleep(1)
