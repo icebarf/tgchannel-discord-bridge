@@ -104,6 +104,8 @@ media smaller than 8 MB.
 u!toggle_direct_large_uploads
 ```
 
+> This command also disables small_uploads when direct large uploads are turned on.
+
 ### `u!toggle_small_uploads`
 Toggles the switch to only allow uploads for media smaller than 8 MB (7.9 MB in code). Small uploads are enabled by default.
 ```py
@@ -143,7 +145,6 @@ a single telegram channel only. Server has a level 2 or level 3 boost
 ```py
 u!add 1084482806064885882 -1001759446243
 u!save
-u!toggle_small_uploads
 u!toggle_direct_large_uploads
 u!begin
 ```

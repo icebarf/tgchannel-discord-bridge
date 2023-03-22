@@ -40,24 +40,67 @@ async def process_queue(queue: asyncio.Queue, client: discord.Client) -> None:
         logging.info("discord: Sending item now")
 
         discord_channel: discord.TextChannel = client.get_channel(item[0])
-        discord_text: str = item[1]
-        discord_attachment: str = item[2]
-        discord_attachment_size: int = item[3]
+        discord_title: str = item[1]
+        discord_text: str = item[2]
+        is_attachment_video = item[3]
+        discord_attachment: str = item[4]
+        discord_attachment_size: int = item[5]
+        direct_url: str = item[6]
         boost_cnt: int = discord_channel.guild.premium_subscription_count
+
         # check necessary where multiple media files are sent from telegram
+        embed = discord.Embed(title=discord_title, colour=0x03b1fc)
+
         if discord_text:
-            await discord_channel.send(discord_text)
+            embed.description = discord_text
+            logging.info("discord: embed_description: %s", embed.description)
+            # await discord_channel.send(discord_text)
+
+        discord_file: discord.File = None
         if discord_attachment:
-            with open(discord_attachment, "rb") as media:
-                if (boost_cnt >= BoostLevel3) and (discord_attachment_size <= telegram_end.media_max):
-                    await discord_channel.send(file=discord.File(media, discord_attachment))
-                elif (boost_cnt >= BoostLevel2 and boost_cnt < BoostLevel3) and (discord_attachment_size <= (telegram_end.media_max / 2)):
-                    await discord_channel.send(file=discord.File(media, discord_attachment))
-                elif (discord_attachment_size <= telegram_end.media_min):
-                    await discord_channel.send(file=discord.File(media, discord_attachment))
-                else:
-                    await discord_channel.send("Media too large for non boosted server.")
-                os.remove(discord_attachment)
+            logging.info("discord: attachment: name: %s", discord_attachment)
+            logging.info(
+                "discord: attachment: is_attachment_video: %s", is_attachment_video)
+            logging.info("discord: attachment: attachment_size: %s",
+                         discord_attachment_size)
+            if (boost_cnt >= BoostLevel3) and (discord_attachment_size <= telegram_end.media_max):
+                discord_file = discord.File(
+                    discord_attachment, filename=discord_attachment)
+                logging.info("discord: reached boost level 3 part")
+                if not is_attachment_video:
+                    logging.info("discord: setting image url in embed")
+                    if not discord_text:
+                        embed.description = "With previous update:"
+                    embed.set_image(url="attachment://"+discord_attachment)
+            elif (boost_cnt >= BoostLevel2 and boost_cnt < BoostLevel3) and (discord_attachment_size <= (telegram_end.media_max / 2)):
+                discord_file = discord.File(
+                    discord_attachment, filename=discord_attachment)
+                logging.info("discord: reached boost level 2 part")
+                if not is_attachment_video:
+                    logging.info("discord: setting image url in embed")
+                    if not discord_text:
+                        embed.description = "With previous update:"
+                    embed.set_image(url="attachment://"+discord_attachment)
+            elif (discord_attachment_size <= telegram_end.media_min):
+                discord_file = discord.File(
+                    discord_attachment, filename=discord_attachment)
+                logging.info("discord: reached default part")
+                if not is_attachment_video:
+                    logging.info("discord: setting image url in embed")
+                    if not discord_text:
+                        embed.description = "With previous update:"
+                    embed.set_image(url="attachment://"+discord_attachment)
+            else:
+                embed.description = embed.description + \
+                    "\nMedia too large for non boosted server."
+
+        await discord_channel.send(file=discord_file, embed=embed)
+
+        if direct_url:
+            await discord_channel.send(direct_url)
+
+        if discord_attachment:
+            os.remove(discord_attachment)
 
         logging.info("discord: item done")
         queue.task_done()

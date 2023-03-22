@@ -58,7 +58,8 @@ def load_channels() -> None:
 
 async def get_and_queue_message(event: Message, text_prefix: str):
     if event.chat_id in telegram_channels:
-        discord_text: str = "**" + text_prefix + "**:\n" + event.text
+        discord_text: str = event.text
+        direct_url: str = None
         media: File = event.file
         media_size: int = None
         file: str = None
@@ -97,16 +98,17 @@ async def get_and_queue_message(event: Message, text_prefix: str):
                     logging.info(
                         "telegram: conversion successfull, returned {}".format(file))
 
-                # copy the media to webserver public directory if it follows these conditions
+            # copy the media to webserver public directory if it follows these conditions
             if (media_size > media_min) and (config.small_uploads_only == False)\
                     and (config.large_upload_to_discord == False):
                 url = server_copy(file)
                 file = None
                 discord_text = discord_text + \
-                    "\nMedia attachment too large. Here's a direct link: " + url
+                    "\nMedia attachment too large. Here's a direct link:"
+                direct_url = url
 
         item = [discord_channels[telegram_channels.index(
-            event.chat_id)], discord_text, file, media_size]
+            event.chat_id)], text_prefix, discord_text, event.video or event.video_note, file, media_size, direct_url]
         await config.message_queue.put(item)
         logging.info("telegram: %s", event.text)
         logging.info("telegram: exiting the message_event_handler()")
