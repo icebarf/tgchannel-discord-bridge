@@ -30,7 +30,6 @@ log_handler: logging.Logger = logging.basicConfig(filename=time_str + "_telegram
 # a buncha constants
 login_file: str = "login.json"
 
-
 class Constants:
     api_id: int = None
     api_hash: str = None
@@ -41,7 +40,7 @@ class Constants:
     discord_admins: list = None
 
 
-data: Constants = None
+data: Constants
 
 with open(login_file, "r", encoding="utf-8") as file:
     json_data: dict = json.load(file)
