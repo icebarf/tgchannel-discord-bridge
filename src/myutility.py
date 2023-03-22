@@ -29,7 +29,7 @@ def get_file(name, mode) -> TextIOWrapper:
     except IOError:
         logging.error(
             "discord: Unable to open {} in mode {}".format(name, mode))
-        raise IOError
+        raise
     logging.info("discord: opened file {} in mode {}".format(name, mode))
     return file
 
@@ -47,7 +47,7 @@ def save_channels() -> None:
     except TypeError:
         logging.error("discord: unable to save channels as JSON locally.")
         channels_file.close()
-        raise TypeError
+        raise
     logging.info("discord: successfully saved channels as JSON locally.")
     config.channels.clear()
     channels_file.close()

@@ -18,7 +18,6 @@ from discord.ext import commands
 from config import logging
 from telegram_end import load_channels
 import config
-import discord
 import myutility
 import telegram_end
 

@@ -21,7 +21,7 @@ import os
 import discord_cogs
 
 from config import logging, asyncio
-from config import discord_token, log_handler
+from config import data, log_handler
 import config
 from telegram_end import telegram_main
 import telegram_end
@@ -122,7 +122,7 @@ class LocalDiscordClientInstance(commands.Bot):
 def main():
     LocalDiscordClient = LocalDiscordClientInstance(
         command_prefix="u!", intents=discord.Intents.all())
-    LocalDiscordClient.run(discord_token, log_handler=log_handler)
+    LocalDiscordClient.run(data.discord_token, log_handler=log_handler)
     logging.info("discord_telegram: Logging out")
 
 
