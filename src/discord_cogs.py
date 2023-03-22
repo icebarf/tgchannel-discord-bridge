@@ -27,7 +27,7 @@ class Channels(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.data.discord_admins))
     async def add(self, ctx: commands.Context, discord: str, *telegram):
         logging.info("discord: add() receieved telegram: {0}, discord {1}".format(
             telegram, discord))
@@ -43,7 +43,7 @@ class Channels(commands.Cog):
                        + "\nChanges are not final yet. When you're done `add`ing. Issue `save` command.")
 
     @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.data.discord_admins))
     async def begin(self, ctx: commands.Context):
         logging.info("discord: loading channels")
         myutility.load_channels()
@@ -64,7 +64,7 @@ class Channels(commands.Cog):
         logging.info("discord: channel loading sequence finished")
 
     @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.data.discord_admins))
     async def dump(self, ctx: commands.Context):
         await ctx.send("```json\n" + myutility.dump_channels() + "\n```")
 
@@ -74,7 +74,7 @@ class Channels(commands.Cog):
                        "\n<https://github.com/icebarf/tgchannel-discord-bridge#use-examples-in-a-discord-server>")
 
     @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.data.discord_admins))
     async def ping(self, ctx: commands.Context):
         await ctx.send("discord: Ping acknowledged.\n"
                        "Hello, user <@{}>".format(ctx.message.author.id))
@@ -82,7 +82,7 @@ class Channels(commands.Cog):
             ctx.message.author.name, ctx.message.author.id))
 
     @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.data.discord_admins))
     async def save(self, ctx: commands.Context):
         try:
             myutility.save_channels()
@@ -95,7 +95,7 @@ class Channels(commands.Cog):
         await ctx.send("https://github.com/icebarf/tgchannel-discord-bridge")
 
     @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.data.discord_admins))
     async def stop(self, ctx: commands.Context):
         config.channels.clear()
         telegram_end.discord_channels = []
@@ -109,7 +109,7 @@ class Channels(commands.Cog):
                        " to fetch updates from")
 
     @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.data.discord_admins))
     async def toggle_small_uploads(self, ctx: commands.Context):
         config.small_uploads_only = not config.small_uploads_only
         if config.small_uploads_only:
@@ -130,7 +130,7 @@ class Channels(commands.Cog):
                              (telegram_end.media_min / 1024) / 1024))
 
     @commands.command()
-    @commands.check_any(commands.is_owner(), commands.has_any_role(config.discord_admins))
+    @commands.check_any(commands.is_owner(), commands.has_any_role(config.data.discord_admins))
     async def toggle_direct_large_uploads(self, ctx: commands.Context):
         config.large_upload_to_discord = not config.large_upload_to_discord
         if config.large_upload_to_discord:
