@@ -30,6 +30,7 @@ log_handler: logging.Logger = logging.basicConfig(filename=time_str + "_telegram
 # a buncha constants
 login_file: str = "login.json"
 
+
 class Constants:
     api_id: int = None
     api_hash: str = None
@@ -39,18 +40,20 @@ class Constants:
     media_url: str = None
     discord_admins: list = None
 
+    def __init__(self, json_data: dict) -> None:
+        self.api_id = json_data["api_id"]
+        self.api_hash = json_data["api_hash"]
+        self.telegram_login_string = json_data["telegram_login_string"]
+        self.discord_token = json_data["discord_token"]
+        self.media_location = json_data["media_location"]
+        self.media_url = json_data["media_url"]
+        self.discord_admins = json_data["discord_admins"]
 
-data: Constants
+
+data: Constants = None
 
 with open(login_file, "r", encoding="utf-8") as file:
-    json_data: dict = json.load(file)
-    data.api_id = json_data["api_id"]
-    data.api_hash = json_data["api_hash"]
-    data.telegram_login_string = json_data["telegram_login_string"]
-    data.discord_token = json_data["discord_token"]
-    data.media_location = json_data["media_location"]
-    data.media_url = json_data["media_url"]
-    data.discord_admins = json_data["discord_admins"]
+    data = Constants(json.load(file))
 
 # Set up the telegram client
 LocalTelegramClient: TelegramClient = TelegramClient(StringSession(
